@@ -1,0 +1,294 @@
+
+
+import os
+import json
+import bz2
+import collections
+import sklearn
+import pandas
+import scipy
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn import svm
+from bz2 import BZ2File as bzopen
+from sklearn.metrics import f1_score
+import operator
+import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib.dates as mdates
+import gensim
+
+
+os.chdir('C:/Users/Burd/Desktop/2015')
+
+filename = 'RC_2015-10.bz2'
+
+counter = {}
+labels = []
+banned_list = ['boltons','coontownmods','Coontownmeta','koontown','fph','shitniggerssay','neofag','hamplanethatred','12345','12thworldproblems','18datingwomenforsex','1AB','20mission','2321343','3_Rust_East_Coast','420yolo','7up','abuseporn','AcademicWriting','accidental_nudity','Accidental_Porn','Adopt','AdviceAnimaIs','All_Hail_Chi_Fung','allblacksvsspringboks','almostnsfw','alternativeright','altright','AmaCheers','Amateur_Bitches','amateurbeauties','amateurpov','AmazonDeals','ANAL_AWW','analdistrict','AnimalPrint','Anklets','Announce/','anti_tranny','apartments','ArianaGrandeLeaks','arizonacardinals','ArizonaSmith','ashlemadisonhack','Asian_Sluts','asiangonewild','asianjailbait','assbait','AubreyPlazaLeaks','BabesPornPlace','BABU','badgirl','Band_Groupies','BareMaidens','bargains','BBCGirls','BBW_AWW','beating_trannies','BeatingEllenPao','beatingwomen','BeccaTobinLeaks','Best_porn_online','bestofcoontown','bestoflesbians','bestofluck','bestofparty','BFD','BigBoobsOnTopGW','BigBooties','BikiniGifs','BisexualSex','blacklivesmattertoo','blacks','Blondes_Sexy_Porn','blood','blueeyes','bluemonkeys','Board','BobbiStarr','boyfriend','Bracelets','braintubs','BrickHouse','BrieLarsonLeaks','Btlondon2012','Budster','BurningAngel','bustybait','carrot','carseatheadrest','CaughtFucking','cga','CheapStuffOnAmazon','chestybait','childgrape','ChurchFuck','churchoffatpeoplehate','circlejerkers','cirquedufreak','coles','CollegeAthletes','com','CoonTown','Coontown2','crab','creepshots','creepshots2','crystalscheatsrt','CSpromod','CumSwallowersHeaven','cutegirls','cybersex','dancer','dating456','day','ddos','destroy','DHW','DigitalDesire','DiscoNunu','disgustingfatpersons','ditka','DIVA','DiveDog','DogsWearingSocks','doublecenturyclub','DOW','DownWithFatties','DoxMe','DragonBallHeroes','draw','DrawnPorn','dsmslowpitch','durianfruit','Eaglesfootball','ebonygame','EbonyGirls Unbnaned.','emoporn','envelopes','erotic_life','esdhtrvv2fdf','espninsider','Ethnic_Porn_Flicks','EuroTruckSimMP','EverydayRacism','EvilAngel','ExampleForum','ExtermineTheWhites','extralunchmoney','FakeMadeReal','fam','FanEnergy','fapator','Fappening','fart','Fast_Food','fatniggerhate','FatPeopleAntipathy','fatpeoplehate','fatpeoplehate100','fatpeoplehate115','fatpeoplehate16','fatpeoplehate2','fatpeoplehate20','fatpeoplehate24','fatpeoplehate3','fatpeoplehate301','fatpeoplehate4','fatpeoplehate442','fatpeoplehate5','fatpeoplehate52','fatpeoplehate747','fatpeoplehate9','fatpeoplehateHD','fatpeoplehatge8','fatpersonhate','FatPersonsLove','FatPolice','fatterpeoplehate','femaleentrails','find_out_girls','fkugapple','FLI','flood','force','Forest','forget','fph8','fplives','fratdeals','Freckled','FreePSNCodesGenerator','Friendshipday','Friendshipday2015','fuckyeahsexyteens','fullmoviesonputlocker','funn','funRAPINGWOMENstories','FutanariLand','FutureSchoolShooters','gallowboobsucks ','GameofTrolls','gargantuandetestation','GasThekikes','GAY_ACT','GeneralMotorsCo','GetYourStream','gfblr','GFg2b','GiantessAnime','Gif_Sexy_Porn_xxx','gif_xxx','gift_help','girlfriend','Girlfriendcraft','girlsinshorts','GirlsWearingBras','glue','GnuLoL','goodbye','googlesub','greeneyes','guinessworldrecords','GunnitHallofShame','gunnithallofshame2','gunnithalloshame2','GushingGirls','GWBabes','h4x0r','HairStyles','hanging','hardsci','hatredoffatpeople','HDMoviesLinks','hdstripteasepics','heartstation','HeavyEyeliner','HentaiGirls2D','HentayGirls','Hentiny','highBMIhate','highlighters','HighresWebm','hippie','hmmmm','Hohohaha','holdemcheatrts','HopeSoloLeaks','hottestvoyeurs','HRD2015','huge_boobs','hzj','ICE','ihatefat','IHeartFatPeople','illegaltorrents','illegaltorrents','imgur','impostors','incel','indymedia','Interracial_Hardcore','IslamiicState','itachi_circlejerk','jailbait','jailbait_nospam','jailbaitarchives','jailbaitgw','jailbaitjunkies','jailbate','jailbatevideos','jart','jasonaldean','JenniferLawrenceLeaks','JerseysOnSale','JesusChatline','job','JordanHinsonLeaks','JPL','justteens','JustThreeBoobs','Kaka','KarmaStories','kaskus','KateUptonLeaks','keppry','kfs','Kidzandart1','KillingWomen','kindlefree','King','KingOfIsrael','KirstenDunstLeaks','Knight','kylepaxton','lambos','Lame','landwhales','lardfashionpolice','large','largeHumanLoathing','LargePeopleAnimosity','largepeopleloathing','Lavender','LeaMicheleLeaks','leftwithhardedge','leftwithsharpedge ','lemonde','lesbians1','letter','lgofficial','ListOfBannedSubs','LizLeeLeaks','lolicock','lolicon','Lolicons','LoliFeet','LoliHaven','lolipee','LoliShota','Low','male_escort','malejailbait','malejailbaitarchives','MarshaMay','Mat','Maturearmpits','mayocide','McKaylaMaroneyLeaks','MEE','megabed','MelissaBenoistLeaks','MetaPowers','metaredditcancer','MI5','MidOhioValley','MILF_MATURE_PORN','million','minas_minas','mindthegap','miniskirt','mirrorgirls','miss','Mission','mitten_flippin','momswivesmilfs','Monday','money_makeing_online','More','Mountains','Mouth2CumGoodStuff','movienudes','MPL','MsCraft','multis','Mureke','MyHeart','nakedbabes','naturalboobs','NBAHD','NBB','Necklaces','neofag2','Neofag3','neofagx','new','NewFappening','nfls','nflsb','nflstreaming','nigger','niggerjailbait','niggers','nigwatch','nine','Ninja','nofattiesallowed','NoSRS','notafathatesub','NotAllowedToMakeSubs','NotLoli','NoTorso','NoTrolls','NSFW_Gifs_porn_TV','nsfw_maledom','nsfw_porno','NSFW_PORNSTARXXX','nsfw_sexo_teen','nsfw_snaps','NSFWAsians','NSFWFirearms','NSWF_Anal_Teens','nudistbeach','Ny0wNy34R','nylon','nylons','obeastappreciation','obesepeopledislike','obesetown','ObesityRules','Obito','OddThoughts','onedirectionbreaking','optingout','Ostergotland','OvalBroke','OverweightAwareness','ovipets','Palace','PALY','pamtheprinter','pantysellinguk','Paoiskillingreddit','paout','paperclip','ParticipaIUCordoba','pen','petgirls','Phantom','Physical_Removal','Pick','picsofdeadjailbait','picsofdeadniggers','pizzagate ','PlayDohMath','pogba','pole','Political_Tweets','Pomf','Porn_Amateur_Hot','porn_bts','porn_sex_sexfight','Porno_GirlsNude','preciousgemstones','PresidentObama','preteen_boys','preteen_girls','PrettyShapes','pro_teen_models','publichealthawareness','publichealthwatch','purenudism','rambutan','rape_roleplay','RapingEllenPao','rapper','reactiongiffles','real_big_ones','realdownblouse','reddit','redditrequests','RepKicks','replay','rides','rightyfriends','River','Rog','royal','Rule34NoCensorship','rulethirtygirl','sacremento','SadieCalvano','Sakura','scenery','SchoolGirl','scopolamina','sdfgsduif','seashell','SelenaGomezLeaks','selfedu','sephlawlesslies','sextape_central','Sexy_Blondes_Hot','Sexy_Blondes_NFSW','sexywalls','Shadowmods','shaved','shaws','sheever','shemale_aww','shemale_tgirl','ShemaleCartoons','shirtwascash','shitlordkingdom','shitlordsunite','Shitty_Mailbox_Mods','shittypcmasterrace','shot','shotacon','Shotacons','shotacub','show','showergirls','Sissy_humiliation','SkinnyAsianChickhate','skinnyasianchicks','slut_pics','slutbusty','sluts_love_cum','slutsbedrunk','snapchatsluts','softcore_booty','SoftCoreGirls','sonyGOP','sororitygirls','Sousvideuk','spin','sportsblogs','SportsJerseyGirls','SSSubredditSSS','StanVanPelt','StraightShota','stream','StreamersReact','stuffedholes','suicide_methods','Superboy','SWBFSWBFSWBFSWBF','sweeden','Switch','TacticalLolis','talent','TamilPost','techraptor','teen_girls','teen_girls_for_sex','TeenGirls','teens','TehFappening','TeresaPalmerLeaks','terminatorgenisys15','TG2WAC','TGIRL_AWW','TheAdminsAreLosingIt','TheBestOfAmazon','thecw','TheFapenning','TheFappenin','TheFappening','thegiver','thegoldenratio','TheLoliLocker','thenewjailbait','TheNSFWConglomerate','TheoryBroke','TheSecondCumming','thinpeoplehate','ThisSubredditIsBanned','tight_butthole','TIRe','todcon','ToeRings','torque','Trainers','tranny_shoah','trannytown','transaids ','transfaggots','transfags ','trapbait','treelot','trillion','TrueLoli','TrumpThreats','truthandlove','TrytoDoxMe ','tyhopisafogit','UFC_on_FOX_190','ufc190rouvscour','ulaninitpista','UncensoredReddit','UnhealthyLifeStyles','uperlabuyof','UPS','Urilia','usanbutinjo','VictoriaJusticeLeaks','video_girls','vocaloidhentai','votesandlikes','voyeur','w4b','warinc','washingmachine','WatchNiggersDie','Weberatefatpeople','Webm_Porn','WeDislikeFatPeople','WesternBoyLoveComics','wetgirls','womenwithbraces','WWE_Summerslam_2015','wwepayback2015','Xforce','xsdgfudsg','xsmall','xxxasian','xxxtube24','YCHS','Zendesk','zkplank','ZoeQuinn','ZoeQuinnConspiracy','zoera']
+
+def generate_content(filename):
+    # reading a bz2 archive
+    with bzopen(filename, "r") as bzfin:
+        """ Handle lines here """
+        lines = []
+        for i, line in enumerate(bzfin):
+            if i == 1000: break
+            parsed = json.loads(line)
+            yield parsed
+            #lines.append(line.rstrip())
+       # for line in lines:
+            #parsed = json.loads(line)
+           # yield parsed
+
+def old_generate_content(filename):
+    # generate parsed content from compressed file #
+    file_obj = bz2.open(filename, 'rb')
+    for line in file_obj.readlines():
+        parsed = json.loads(line)
+        yield parsed
+
+def single_comment_data(stopat):
+    # for getting idea of format #
+    for n,comment in enumerate(generate_content(filename)):
+        if n == stopat:
+            break
+        print (n, comment)
+        
+def subreddit_commentcounter(): 
+    # for listing subreddits present and displaying number of comments #
+    for comment in generate_content(filename):
+        subreddit = comment.get('subreddit', '0')
+        if subreddit in counter:
+            counter[subreddit]+=1
+        else: 
+            counter[subreddit]=1  
+    print(counter)
+
+def subreddit_commentviewer(stopat):
+    # for viewing the first ten comments #
+    for n,comment in enumerate(generate_content(filename)):
+        if n == stopat:
+            break
+        print (n, comment['subreddit'], comment['body'])
+        
+def comment_compiler(stopat):
+    # for grouping comments #
+    for n,comment in enumerate(generate_content(filename)):
+        if n == stopat:
+            break
+        yield comment['body']
+
+def comments_fromsubreddit(subred):
+    # for viewing only comments and scores from a particular subreddit #
+    for comment in generate_content(filename):
+        body = comment['body']
+        #body = comment['title']
+        #scores= comment['score']
+        subreddit = comment.get('subreddit', '0')
+        # define subreddit #
+        sub = (subred)
+        subreddits_list = []
+        if subreddit in sub:
+            scb_dict = [subreddit,body]
+            print (scb_dict)
+            subreddits_list.append(scb_dict)
+        #items = {}
+        #for line in subreddits_list:
+           # line = map(int, line.split())  #convert the text data to integers
+           # key, value = line[0], line[1:]
+           # items[key] = value
+           #print (subreddits_list)
+            
+def vectorizing_comments():
+    # for turning sub-body into vectors #
+    
+    vectorizer = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform(comment_compiler(100))
+    return tfidf_matrix
+    print (tfidf_matrix.shape)
+
+def labels_for_bodies(stopat):
+    
+    # for ordered list of subreddit labels for comments #
+    for n,comment in enumerate(generate_content(filename)):
+        if n == stopat:
+            break
+        list_sb = comment['subreddit']
+        labels.append(list_sb)
+    return labels
+
+
+def categorizing_comments():
+    
+    # for predicting sub affiliation given a body #
+    clf = svm.SVC()
+    clf.fit(vectorizing_comments(), banned_subreddit_labeler())
+    predictedsub = clf.predict(vectorizing_comments())
+    return predictedsub
+
+def submission_sampler():
+    samples = []
+    top_score_sub = 0
+    for comment in generate_content(filename):
+        subreddit = comment['subreddit']
+        #for comment sampler# 
+        content = comment['body']
+        #content = comment['title']
+        score = comment['score']
+        bannedsubreddits = ['12345','12thworldproblems','18datingwomenforsex','1AB','20mission','2321343','3_Rust_East_Coast','420yolo','7up','abuseporn','AcademicWriting','accidental_nudity','Accidental_Porn','Adopt','AdviceAnimaIs','All_Hail_Chi_Fung','allblacksvsspringboks','almostnsfw','alternativeright','altright','AmaCheers','Amateur_Bitches','amateurbeauties','amateurpov','AmazonDeals','ANAL_AWW','analdistrict','AnimalPrint','Anklets','Announce/','anti_tranny','apartments','ArianaGrandeLeaks','arizonacardinals','ArizonaSmith','ashlemadisonhack','Asian_Sluts','asiangonewild','asianjailbait','assbait','AubreyPlazaLeaks','BabesPornPlace','BABU','badgirl','Band_Groupies','BareMaidens','bargains','BBCGirls','BBW_AWW','beating_trannies','BeatingEllenPao','beatingwomen','BeccaTobinLeaks','Best_porn_online','bestofcoontown','bestoflesbians','bestofluck','bestofparty','BFD','BigBoobsOnTopGW','BigBooties','BikiniGifs','BisexualSex','blacklivesmattertoo','blacks','Blondes_Sexy_Porn','blood','blueeyes','bluemonkeys','Board','BobbiStarr','boyfriend','Bracelets','braintubs','BrickHouse','BrieLarsonLeaks','Btlondon2012','Budster','BurningAngel','bustybait','carrot','carseatheadrest','CaughtFucking','cga','CheapStuffOnAmazon','chestybait','childgrape','ChurchFuck','churchoffatpeoplehate','circlejerkers','cirquedufreak','coles','CollegeAthletes','com','CoonTown','Coontown2','crab','creepshots','creepshots2','crystalscheatsrt','CSpromod','CumSwallowersHeaven','cutegirls','cybersex','dancer','dating456','day','ddos','destroy','DHW','DigitalDesire','DiscoNunu','disgustingfatpersons','ditka','DIVA','DiveDog','DogsWearingSocks','doublecenturyclub','DOW','DownWithFatties','DoxMe','DragonBallHeroes','draw','DrawnPorn','dsmslowpitch','durianfruit','Eaglesfootball','ebonygame','EbonyGirls Unbnaned.','emoporn','envelopes','erotic_life','esdhtrvv2fdf','espninsider','Ethnic_Porn_Flicks','EuroTruckSimMP','EverydayRacism','EvilAngel','ExampleForum','ExtermineTheWhites','extralunchmoney','FakeMadeReal','fam','FanEnergy','fapator','Fappening','fart','Fast_Food','fatniggerhate','FatPeopleAntipathy','fatpeoplehate','fatpeoplehate100','fatpeoplehate115','fatpeoplehate16','fatpeoplehate2','fatpeoplehate20','fatpeoplehate24','fatpeoplehate3','fatpeoplehate301','fatpeoplehate4','fatpeoplehate442','fatpeoplehate5','fatpeoplehate52','fatpeoplehate747','fatpeoplehate9','fatpeoplehateHD','fatpeoplehatge8','fatpersonhate','FatPersonsLove','FatPolice','fatterpeoplehate','femaleentrails','find_out_girls','fkugapple','FLI','flood','force','Forest','forget','fph8','fplives','fratdeals','Freckled','FreePSNCodesGenerator','Friendshipday','Friendshipday2015','fuckyeahsexyteens','fullmoviesonputlocker','funn','funRAPINGWOMENstories','FutanariLand','FutureSchoolShooters','gallowboobsucks ','GameofTrolls','gargantuandetestation','GasThekikes','GAY_ACT','GeneralMotorsCo','GetYourStream','gfblr','GFg2b','GiantessAnime','Gif_Sexy_Porn_xxx','gif_xxx','gift_help','girlfriend','Girlfriendcraft','girlsinshorts','GirlsWearingBras','glue','GnuLoL','goodbye','googlesub','greeneyes','guinessworldrecords','GunnitHallofShame','gunnithallofshame2','gunnithalloshame2','GushingGirls','GWBabes','h4x0r','HairStyles','hanging','hardsci','hatredoffatpeople','HDMoviesLinks','hdstripteasepics','heartstation','HeavyEyeliner','HentaiGirls2D','HentayGirls','Hentiny','highBMIhate','highlighters','HighresWebm','hippie','hmmmm','Hohohaha','holdemcheatrts','HopeSoloLeaks','hottestvoyeurs','HRD2015','huge_boobs','hzj','ICE','ihatefat','IHeartFatPeople','illegaltorrents','illegaltorrents','imgur','impostors','incel','indymedia','Interracial_Hardcore','IslamiicState','itachi_circlejerk','jailbait','jailbait_nospam','jailbaitarchives','jailbaitgw','jailbaitjunkies','jailbate','jailbatevideos','jart','jasonaldean','JenniferLawrenceLeaks','JerseysOnSale','JesusChatline','job','JordanHinsonLeaks','JPL','justteens','JustThreeBoobs','Kaka','KarmaStories','kaskus','KateUptonLeaks','keppry','kfs','Kidzandart1','KillingWomen','kindlefree','King','KingOfIsrael','KirstenDunstLeaks','Knight','kylepaxton','lambos','Lame','landwhales','lardfashionpolice','large','largeHumanLoathing','LargePeopleAnimosity','largepeopleloathing','Lavender','LeaMicheleLeaks','leftwithhardedge','leftwithsharpedge ','lemonde','lesbians1','letter','lgofficial','ListOfBannedSubs','LizLeeLeaks','lolicock','lolicon','Lolicons','LoliFeet','LoliHaven','lolipee','LoliShota','Low','male_escort','malejailbait','malejailbaitarchives','MarshaMay','Mat','Maturearmpits','mayocide','McKaylaMaroneyLeaks','MEE','megabed','MelissaBenoistLeaks','MetaPowers','metaredditcancer','MI5','MidOhioValley','MILF_MATURE_PORN','million','minas_minas','mindthegap','miniskirt','mirrorgirls','miss','Mission','mitten_flippin','momswivesmilfs','Monday','money_makeing_online','More','Mountains','Mouth2CumGoodStuff','movienudes','MPL','MsCraft','multis','Mureke','MyHeart','nakedbabes','naturalboobs','NBAHD','NBB','Necklaces','neofag2','Neofag3','neofagx','new','NewFappening','nfls','nflsb','nflstreaming','nigger','niggerjailbait','niggers','nigwatch','nine','Ninja','nofattiesallowed','NoSRS','notafathatesub','NotAllowedToMakeSubs','NotLoli','NoTorso','NoTrolls','NSFW_Gifs_porn_TV','nsfw_maledom','nsfw_porno','NSFW_PORNSTARXXX','nsfw_sexo_teen','nsfw_snaps','NSFWAsians','NSFWFirearms','NSWF_Anal_Teens','nudistbeach','Ny0wNy34R','nylon','nylons','obeastappreciation','obesepeopledislike','obesetown','ObesityRules','Obito','OddThoughts','onedirectionbreaking','optingout','Ostergotland','OvalBroke','OverweightAwareness','ovipets','Palace','PALY','pamtheprinter','pantysellinguk','Paoiskillingreddit','paout','paperclip','ParticipaIUCordoba','pen','petgirls','Phantom','Physical_Removal','Pick','picsofdeadjailbait','picsofdeadniggers','pizzagate ','PlayDohMath','pogba','pole','Political_Tweets','Pomf','Porn_Amateur_Hot','porn_bts','porn_sex_sexfight','Porno_GirlsNude','preciousgemstones','PresidentObama','preteen_boys','preteen_girls','PrettyShapes','pro_teen_models','publichealthawareness','publichealthwatch','purenudism','rambutan','rape_roleplay','RapingEllenPao','rapper','reactiongiffles','real_big_ones','realdownblouse','reddit','redditrequests','RepKicks','replay','rides','rightyfriends','River','Rog','royal','Rule34NoCensorship','rulethirtygirl','sacremento','SadieCalvano','Sakura','scenery','SchoolGirl','scopolamina','sdfgsduif','seashell','SelenaGomezLeaks','selfedu','sephlawlesslies','sextape_central','Sexy_Blondes_Hot','Sexy_Blondes_NFSW','sexywalls','Shadowmods','shaved','shaws','sheever','shemale_aww','shemale_tgirl','ShemaleCartoons','shirtwascash','shitlordkingdom','shitlordsunite','Shitty_Mailbox_Mods','shittypcmasterrace','shot','shotacon','Shotacons','shotacub','show','showergirls','Sissy_humiliation','SkinnyAsianChickhate','skinnyasianchicks','slut_pics','slutbusty','sluts_love_cum','slutsbedrunk','snapchatsluts','softcore_booty','SoftCoreGirls','sonyGOP','sororitygirls','Sousvideuk','spin','sportsblogs','SportsJerseyGirls','SSSubredditSSS','StanVanPelt','StraightShota','stream','StreamersReact','stuffedholes','suicide_methods','Superboy','SWBFSWBFSWBFSWBF','sweeden','Switch','TacticalLolis','talent','TamilPost','techraptor','teen_girls','teen_girls_for_sex','TeenGirls','teens','TehFappening','TeresaPalmerLeaks','terminatorgenisys15','TG2WAC','TGIRL_AWW','TheAdminsAreLosingIt','TheBestOfAmazon','thecw','TheFapenning','TheFappenin','TheFappening','thegiver','thegoldenratio','TheLoliLocker','thenewjailbait','TheNSFWConglomerate','TheoryBroke','TheSecondCumming','thinpeoplehate','ThisSubredditIsBanned','tight_butthole','TIRe','todcon','ToeRings','torque','Trainers','tranny_shoah','trannytown','transaids ','transfaggots','transfags ','trapbait','treelot','trillion','TrueLoli','TrumpThreats','truthandlove','TrytoDoxMe ','tyhopisafogit','UFC_on_FOX_190','ufc190rouvscour','ulaninitpista','UncensoredReddit','UnhealthyLifeStyles','uperlabuyof','UPS','Urilia','usanbutinjo','VictoriaJusticeLeaks','video_girls','vocaloidhentai','votesandlikes','voyeur','w4b','warinc','washingmachine','WatchNiggersDie','Weberatefatpeople','Webm_Porn','WeDislikeFatPeople','WesternBoyLoveComics','wetgirls','womenwithbraces','WWE_Summerslam_2015','wwepayback2015','Xforce','xsdgfudsg','xsmall','xxxasian','xxxtube24','YCHS','Zendesk','zkplank','ZoeQuinn','ZoeQuinnConspiracy','zoera']
+
+        if subreddit in bannedsubreddits:
+            new_top = [score, subreddit, content]
+            #if score > top_scores:
+            if score > top_score_sub:
+                samples.append(new_top)
+                list.sort(samples, reverse = True)
+            yield samples
+        top_scores = [item[0] for item in samples]
+        top_score_sub = top_scores[0]
+    print (samples)
+    #print (top_scores)
+    #print (top_score_sub)
+    
+def banned_subreddit_labeler():
+    ban_labels = []
+    banned_list = ['12345','12thworldproblems','18datingwomenforsex','1AB','20mission','2321343','3_Rust_East_Coast','420yolo','7up','abuseporn','AcademicWriting','accidental_nudity','Accidental_Porn','Adopt','AdviceAnimaIs','All_Hail_Chi_Fung','allblacksvsspringboks','almostnsfw','alternativeright','altright','AmaCheers','Amateur_Bitches','amateurbeauties','amateurpov','AmazonDeals','ANAL_AWW','analdistrict','AnimalPrint','Anklets','Announce/','anti_tranny','apartments','ArianaGrandeLeaks','arizonacardinals','ArizonaSmith','ashlemadisonhack','Asian_Sluts','asiangonewild','asianjailbait','assbait','AubreyPlazaLeaks','BabesPornPlace','BABU','badgirl','Band_Groupies','BareMaidens','bargains','BBCGirls','BBW_AWW','beating_trannies','BeatingEllenPao','beatingwomen','BeccaTobinLeaks','Best_porn_online','bestofcoontown','bestoflesbians','bestofluck','bestofparty','BFD','BigBoobsOnTopGW','BigBooties','BikiniGifs','BisexualSex','blacklivesmattertoo','blacks','Blondes_Sexy_Porn','blood','blueeyes','bluemonkeys','Board','BobbiStarr','boyfriend','Bracelets','braintubs','BrickHouse','BrieLarsonLeaks','Btlondon2012','Budster','BurningAngel','bustybait','carrot','carseatheadrest','CaughtFucking','cga','CheapStuffOnAmazon','chestybait','childgrape','ChurchFuck','churchoffatpeoplehate','circlejerkers','cirquedufreak','coles','CollegeAthletes','com','CoonTown','Coontown2','crab','creepshots','creepshots2','crystalscheatsrt','CSpromod','CumSwallowersHeaven','cutegirls','cybersex','dancer','dating456','day','ddos','destroy','DHW','DigitalDesire','DiscoNunu','disgustingfatpersons','ditka','DIVA','DiveDog','DogsWearingSocks','doublecenturyclub','DOW','DownWithFatties','DoxMe','DragonBallHeroes','draw','DrawnPorn','dsmslowpitch','durianfruit','Eaglesfootball','ebonygame','EbonyGirls Unbnaned.','emoporn','envelopes','erotic_life','esdhtrvv2fdf','espninsider','Ethnic_Porn_Flicks','EuroTruckSimMP','EverydayRacism','EvilAngel','ExampleForum','ExtermineTheWhites','extralunchmoney','FakeMadeReal','fam','FanEnergy','fapator','Fappening','fart','Fast_Food','fatniggerhate','FatPeopleAntipathy','fatpeoplehate','fatpeoplehate100','fatpeoplehate115','fatpeoplehate16','fatpeoplehate2','fatpeoplehate20','fatpeoplehate24','fatpeoplehate3','fatpeoplehate301','fatpeoplehate4','fatpeoplehate442','fatpeoplehate5','fatpeoplehate52','fatpeoplehate747','fatpeoplehate9','fatpeoplehateHD','fatpeoplehatge8','fatpersonhate','FatPersonsLove','FatPolice','fatterpeoplehate','femaleentrails','find_out_girls','fkugapple','FLI','flood','force','Forest','forget','fph8','fplives','fratdeals','Freckled','FreePSNCodesGenerator','Friendshipday','Friendshipday2015','fuckyeahsexyteens','fullmoviesonputlocker','funn','funRAPINGWOMENstories','FutanariLand','FutureSchoolShooters','gallowboobsucks ','GameofTrolls','gargantuandetestation','GasThekikes','GAY_ACT','GeneralMotorsCo','GetYourStream','gfblr','GFg2b','GiantessAnime','Gif_Sexy_Porn_xxx','gif_xxx','gift_help','girlfriend','Girlfriendcraft','girlsinshorts','GirlsWearingBras','glue','GnuLoL','goodbye','googlesub','greeneyes','guinessworldrecords','GunnitHallofShame','gunnithallofshame2','gunnithalloshame2','GushingGirls','GWBabes','h4x0r','HairStyles','hanging','hardsci','hatredoffatpeople','HDMoviesLinks','hdstripteasepics','heartstation','HeavyEyeliner','HentaiGirls2D','HentayGirls','Hentiny','highBMIhate','highlighters','HighresWebm','hippie','hmmmm','Hohohaha','holdemcheatrts','HopeSoloLeaks','hottestvoyeurs','HRD2015','huge_boobs','hzj','ICE','ihatefat','IHeartFatPeople','illegaltorrents','illegaltorrents','imgur','impostors','incel','indymedia','Interracial_Hardcore','IslamiicState','itachi_circlejerk','jailbait','jailbait_nospam','jailbaitarchives','jailbaitgw','jailbaitjunkies','jailbate','jailbatevideos','jart','jasonaldean','JenniferLawrenceLeaks','JerseysOnSale','JesusChatline','job','JordanHinsonLeaks','JPL','justteens','JustThreeBoobs','Kaka','KarmaStories','kaskus','KateUptonLeaks','keppry','kfs','Kidzandart1','KillingWomen','kindlefree','King','KingOfIsrael','KirstenDunstLeaks','Knight','kylepaxton','lambos','Lame','landwhales','lardfashionpolice','large','largeHumanLoathing','LargePeopleAnimosity','largepeopleloathing','Lavender','LeaMicheleLeaks','leftwithhardedge','leftwithsharpedge ','lemonde','lesbians1','letter','lgofficial','ListOfBannedSubs','LizLeeLeaks','lolicock','lolicon','Lolicons','LoliFeet','LoliHaven','lolipee','LoliShota','Low','male_escort','malejailbait','malejailbaitarchives','MarshaMay','Mat','Maturearmpits','mayocide','McKaylaMaroneyLeaks','MEE','megabed','MelissaBenoistLeaks','MetaPowers','metaredditcancer','MI5','MidOhioValley','MILF_MATURE_PORN','million','minas_minas','mindthegap','miniskirt','mirrorgirls','miss','Mission','mitten_flippin','momswivesmilfs','Monday','money_makeing_online','More','Mountains','Mouth2CumGoodStuff','movienudes','MPL','MsCraft','multis','Mureke','MyHeart','nakedbabes','naturalboobs','NBAHD','NBB','Necklaces','neofag2','Neofag3','neofagx','new','NewFappening','nfls','nflsb','nflstreaming','nigger','niggerjailbait','niggers','nigwatch','nine','Ninja','nofattiesallowed','NoSRS','notafathatesub','NotAllowedToMakeSubs','NotLoli','NoTorso','NoTrolls','NSFW_Gifs_porn_TV','nsfw_maledom','nsfw_porno','NSFW_PORNSTARXXX','nsfw_sexo_teen','nsfw_snaps','NSFWAsians','NSFWFirearms','NSWF_Anal_Teens','nudistbeach','Ny0wNy34R','nylon','nylons','obeastappreciation','obesepeopledislike','obesetown','ObesityRules','Obito','OddThoughts','onedirectionbreaking','optingout','Ostergotland','OvalBroke','OverweightAwareness','ovipets','Palace','PALY','pamtheprinter','pantysellinguk','Paoiskillingreddit','paout','paperclip','ParticipaIUCordoba','pen','petgirls','Phantom','Physical_Removal','Pick','picsofdeadjailbait','picsofdeadniggers','pizzagate ','PlayDohMath','pogba','pole','Political_Tweets','Pomf','Porn_Amateur_Hot','porn_bts','porn_sex_sexfight','Porno_GirlsNude','preciousgemstones','PresidentObama','preteen_boys','preteen_girls','PrettyShapes','pro_teen_models','publichealthawareness','publichealthwatch','purenudism','rambutan','rape_roleplay','RapingEllenPao','rapper','reactiongiffles','real_big_ones','realdownblouse','reddit','redditrequests','RepKicks','replay','rides','rightyfriends','River','Rog','royal','Rule34NoCensorship','rulethirtygirl','sacremento','SadieCalvano','Sakura','scenery','SchoolGirl','scopolamina','sdfgsduif','seashell','SelenaGomezLeaks','selfedu','sephlawlesslies','sextape_central','Sexy_Blondes_Hot','Sexy_Blondes_NFSW','sexywalls','Shadowmods','shaved','shaws','sheever','shemale_aww','shemale_tgirl','ShemaleCartoons','shirtwascash','shitlordkingdom','shitlordsunite','Shitty_Mailbox_Mods','shittypcmasterrace','shot','shotacon','Shotacons','shotacub','show','showergirls','Sissy_humiliation','SkinnyAsianChickhate','skinnyasianchicks','slut_pics','slutbusty','sluts_love_cum','slutsbedrunk','snapchatsluts','softcore_booty','SoftCoreGirls','sonyGOP','sororitygirls','Sousvideuk','spin','sportsblogs','SportsJerseyGirls','SSSubredditSSS','StanVanPelt','StraightShota','stream','StreamersReact','stuffedholes','suicide_methods','Superboy','SWBFSWBFSWBFSWBF','sweeden','Switch','TacticalLolis','talent','TamilPost','techraptor','teen_girls','teen_girls_for_sex','TeenGirls','teens','TehFappening','TeresaPalmerLeaks','terminatorgenisys15','TG2WAC','TGIRL_AWW','TheAdminsAreLosingIt','TheBestOfAmazon','thecw','TheFapenning','TheFappenin','TheFappening','thegiver','thegoldenratio','TheLoliLocker','thenewjailbait','TheNSFWConglomerate','TheoryBroke','TheSecondCumming','thinpeoplehate','ThisSubredditIsBanned','tight_butthole','TIRe','todcon','ToeRings','torque','Trainers','tranny_shoah','trannytown','transaids ','transfaggots','transfags ','trapbait','treelot','trillion','TrueLoli','TrumpThreats','truthandlove','TrytoDoxMe ','tyhopisafogit','UFC_on_FOX_190','ufc190rouvscour','ulaninitpista','UncensoredReddit','UnhealthyLifeStyles','uperlabuyof','UPS','Urilia','usanbutinjo','VictoriaJusticeLeaks','video_girls','vocaloidhentai','votesandlikes','voyeur','w4b','warinc','washingmachine','WatchNiggersDie','Weberatefatpeople','Webm_Porn','WeDislikeFatPeople','WesternBoyLoveComics','wetgirls','womenwithbraces','WWE_Summerslam_2015','wwepayback2015','Xforce','xsdgfudsg','xsmall','xxxasian','xxxtube24','YCHS','Zendesk','zkplank','ZoeQuinn','ZoeQuinnConspiracy','zoera']
+    for comment in generate_content(filename):
+        subreddit = comment['subreddit']
+        body = comment['body']
+        score = comment['score']
+        if subreddit in banned_list:
+            subreddit = 'banned'
+            ban_labels.append(subreddit)
+        else:
+            subreddit = 'unbanned'
+            ban_labels.append(subreddit)
+    print (ban_labels)
+    return (ban_labels)
+   # y_true = (ban_labels)
+    #y_pred = categorizing_comments()
+    #f1_score(y_true, y_pred, average='macro')
+
+        
+def for_f1_score():
+  # y_true = ban_labels
+  # y_pred = categorizing_comments()
+  # f1_score(y_true, y_pred, average='macro')
+    #f1_score(y_true, y_pred, average='micro')
+    #f1_score(y_true, y_pred, average='weighted')
+    #f1_score(y_true, y_pred, average='none')
+    
+import zipfile
+import pandas
+import json
+import datetime
+
+def load_file(filename, max_lines=-1):
+    n = 0
+    with zipfile.bz2.open(filename) as f:
+        while n != max_lines:
+            n +=1
+            line = f.readline()
+            if not line: break
+            yield json.loads(line.decode() )
+
+def preview(filename, number_of_items):
+    items = [item for item in load_file(filename, max_lines=number_of_items)]
+    return items
+    
+    
+def to_pandas(items):
+    dataframe = pandas.DataFrame(items)
+    dataframe.created_utc = dataframe.created_utc.map(int)
+    dataframe.created = dataframe.created_utc.map(datetime.datetime.fromtimestamp)
+    dataframe.index = dataframe.created
+    dataframe.index = dataframe.index.normalize()
+    return dataframe
+
+def to_timeseries(dataframe):
+    grouped_dataframe = dataframe.groupby([dataframe.index, dataframe.subreddit]).body.count()
+    timeseries_dataframe = grouped_dataframe.unstack(level='subreddit')
+    return timeseries_dataframe
+    #print (timeseries_dataframe)
+
+def to_csv(dataframe, filename):
+    dataframe.to_csv(filename)
+    #print('wrote dataframe to filename: ' %filename)
+    #print (dataframe)
+   
+def line_graph(timeseries_dataframe):
+    #print (timeseries_dataframe)
+    days = timeseries_dataframe.created
+    submissions = body
+    plt.plot(days,submissions,fmt="r-")
+    plt.show()
+        
+def hdpmodel_maker(source):
+    corpus = []
+    for comment in (source):
+        subreddit = comment['subreddit']
+        body = comment['body']
+        corpus.append((subreddit,body))
+        #print (corpus)
+    hdpmodel = models.HdpModel(corpus, id2word)
+    topics = hdp.print_topics(topics=-1, topn=20)
+    print (corpus)
+    return hdpmodel
+    
+def topic_scale(hdpmodel):
+    shown_topics = hdpmodel.show_topics(num_topics=-1, formatted=False)
+    topics_nos = [x[0] for x in shown_topics ]
+    weights = [ sum([item[1] for item in shown_topics[topicN][1]]) for topicN in topics_nos ]
+    return pd.DataFrame({'topic_id' : topics_nos, 'weight' : weights})
+                        
+                        
+def fixation_feature(threshold = 5):
+    alltopics = topic_scale()
+    [subreddit][topic_id]= sbhdp
+    if  alltopics[weight] > threshold:
+        topic_id = 0000
+        ### add counter - per - subreddits
+        for subreddit in sbhdp:
+            if topic_id in counter:
+                counter[topic_id]+=1
+            else: 
+                counter[topic_id]=1
+            print(counter)
+        
+        
+    
+    #topics per subreddit
+    
+#def sentiment_feature():
+    #look at sentiment data format
+    #sentiment per subreddit
+
+#def hatespeech_feature():
+    #hateterms = []
+    #reduce comments to hate terms
+    #counter of hateterms per subreddit
+
+#def threat_features():
+    #threattrems = []
+    #reduce comments to threat terms
+    #counter of threaterms per subreddit
+    
+#generate_content(filename)
+#subreddit_commentcounter()
+#single_comment_data(5)
+#subreddit_commentviewer(10)
+#comment_compiler(10)
+#comments_fromsubreddit(banned_list)
+#vectorizing_comments()
+#labels_for_bodies(15)
+#categorizing_comments()
+#for_f1_score()
+#submission_sampler()
+#for i in submission_sampler(): pass
+#banned_subreddit_labeler()
+#load_file(filename, max_lines = 1000)
+#preview(filename, 10)
+#to_pandas(preview(filename, 10))
+#to_timeseries(to_pandas(preview(filename, 10)))
+#to_csv(to_timeseries(to_pandas(preview(filename, 10))), 'filename')
+#line_graph(to_timeseries(to_pandas(preview(filename, 10))))
